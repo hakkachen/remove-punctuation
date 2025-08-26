@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>移除標點符號TMS專用</title>
+  <meta name="description" content="貼上文字，移除所有標點符號（保留*），並移除其他空白，保留文字內容。" />
+  <style>
+    :root { --bg: #ffffff; --text: #000000; --border: #000000; }
+    body { margin:0; font-family: "Noto Sans TC", sans-serif; background: var(--bg); color: var(--text); }
+    .wrap { max-width: 900px; margin: 40px auto; padding: 0 16px; }
+    textarea { width:100%; min-height:300px; padding:12px; border-radius:12px; border:1px solid var(--border); background: var(--bg); color: var(--text); font-size:15px; line-height:1.6; resize:vertical; }
+    .btn-container { display:flex; align-items:center; margin:20px 0; justify-content:flex-start; }
+    .btn { padding:10px 20px; border:none; border-radius:10px; cursor:pointer; background:#e0e0e0; color: var(--text); position: relative; }
+    .btn:hover { background:#d0d0d0; }
+    .tooltip { display:inline-block; margin-left:10px; color: green; font-weight:bold; visibility:hidden; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>移除標點符號TMS專用</h1>
+    <textarea id="input" placeholder="貼上文字..."></textarea>
+    <div class="btn-container">
+      <button class="btn" id="processBtn">處理文字</button>
+      <span class="tooltip" id="tooltip">已複製！</span>
+    </div>
+    <textarea id="output" placeholder="結果會在這裡" readonly></textarea>
+  </div>
+
+  <script>
+    const inputEl = document.getElementById('input');
+    const outputEl = document.getElementById('output');
+    const tooltipEl = document.getElementById('tooltip');
+
+    function processText(text) {
+      if (!text) return '';
+      text = text.replace(/\u3000/g, '');
+      return text.replace(/[\p{P}\s]/gu, match => match === '*' ? '*' : '');
+    }
+
+    document.getElementById('processBtn').addEventListener('click', async () => {
+      outputEl.value = processText(inputEl.value);
+      if (outputEl.value) {
+        try {
+          await navigator.clipboard.writeText(outputEl.value);
+          tooltipEl.style.visibility = 'visible';
+          setTimeout(() => tooltipEl.style.visibility = 'hidden', 2000);
+        } catch {
+          outputEl.select();
+          document.execCommand('copy');
+          tooltipEl.style.visibility = 'visible';
+          setTimeout(() => tooltipEl.style.visibility = 'hidden', 2000);
+        }
+      }
+    });
+  </script>
+</body>
+</html>
