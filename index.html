@@ -35,7 +35,7 @@
     function processText(text) {
       if (!text) return '';
       text = text.replace(/\u3000/g, '');
-      return text.replace(/[\p{P}\s]/gu, match => match === '*' ? '*' : '');
+      return text.replace(/[\p{P}\s]/gu, match => (match === '*' || match === '/') ? match : '');
     }
 
     document.getElementById('processBtn').addEventListener('click', async () => {
@@ -56,3 +56,4 @@
   </script>
 </body>
 </html>
+
