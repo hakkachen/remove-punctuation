@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>移除標點符號TMS專用</title>
-  <meta name="description" content="貼上文字，移除所有標點符號（保留*），並移除其他空白，保留文字內容。" />
+  <meta name="description" content="貼上文字，移除所有標點符號（保留*、/），並移除其他空白，保留文字內容。" />
   <style>
     :root { --bg: #ffffff; --text: #000000; --border: #000000; }
     body { margin:0; font-family: "Noto Sans TC", sans-serif; background: var(--bg); color: var(--text); }
@@ -34,8 +34,9 @@
 
     function processText(text) {
       if (!text) return '';
-      text = text.replace(/\u3000/g, '');
-      return text.replace(/[\p{P}\s]/gu, match => (match === '*' || match === '/') ? match : '');
+      text = text.replace(/\u3000/g, ''); // 移除全形空格
+      // 移除所有非「字母、數字、*、/」的字元
+      return text.replace(/[^\p{L}\p{N}*/]/gu, '');
     }
 
     document.getElementById('processBtn').addEventListener('click', async () => {
@@ -56,4 +57,3 @@
   </script>
 </body>
 </html>
-
